@@ -19,7 +19,7 @@ class HomeScreenState extends State<HomeScreen> { // Corregido el nombre de la c
   final List<Widget> _screens = [
     const Tienda(),
     const Categoria(),
-    const Promos(),
+    const Promos(),// Pantalla de Promos ACTUALIZAR
     const Pedidos(),
     const Cuenta(),
   ];

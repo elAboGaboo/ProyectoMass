@@ -71,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _screens = [
     const Tienda(), // Pantalla de Tienda
     const Categoria(), // Pantalla de Categoría
-    const Promos(), // Pantalla de Promos
+    const Promos(), // Pantalla de Promos ACTUALIZAR
     const Pedidos(), // Pantalla de Pedidos
     const Cuenta(), // Pantalla de Cuenta
   ];

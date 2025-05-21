@@ -7,12 +7,12 @@ class Promos extends StatefulWidget {
   const Promos({super.key});
 
   @override
-  _PromosModuleState createState() => _PromosModuleState();
+  _PromosState createState() => _PromosState();
 }
 
-class _PromosModuleState extends State<Promos> {
+class _PromosState extends State<Promos> {
   final CollectionReference _coleccion =
-      FirebaseFirestore.instance.collection('promos');
+      FirebaseFirestore.instance.collection('promos'); // Cambia 'delicia' por el nombre de tu colección
 
   final _formKey = GlobalKey<FormState>();
   final nombreController = TextEditingController();
@@ -47,7 +47,7 @@ class _PromosModuleState extends State<Promos> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Delicia - Productos'),
+        title: const Text('Promos'),
         centerTitle: true,
       ),
       body: Column(
@@ -62,7 +62,7 @@ class _PromosModuleState extends State<Promos> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
                   Text(
-                    '¡Bienvenido a Delicia!',
+                    '¡Bienvenido a Promos!',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -222,6 +222,7 @@ class _PromosModuleState extends State<Promos> {
                         tipoSeleccionado = value!;
                       });
                     },
+                    
                   ),
                   const SizedBox(height: 16),
 

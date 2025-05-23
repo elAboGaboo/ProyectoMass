@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Cuenta extends StatefulWidget {
-  const Cuenta({Key? key}) : super(key: key);
+  const Cuenta({super.key});
 
   @override
   _CuentaState createState() => _CuentaState();

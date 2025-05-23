@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'productos_screen.dart';
 
 class Categoria extends StatelessWidget {
-  const Categoria({Key? key}) : super(key: key);
+  const Categoria({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,10 @@ class Categoria extends StatelessWidget {
         children: [
           // Selector de dirección
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 8.0,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -47,14 +51,8 @@ class Categoria extends StatelessWidget {
                       value: 'Selecciona una dirección',
                       child: Text('Selecciona una dirección'),
                     ),
-                    DropdownMenuItem(
-                      value: 'Casa',
-                      child: Text('Casa'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'Oficina',
-                      child: Text('Oficina'),
-                    ),
+                    DropdownMenuItem(value: 'Casa', child: Text('Casa')),
+                    DropdownMenuItem(value: 'Oficina', child: Text('Oficina')),
                   ],
                   onChanged: (value) {
                     // Acción al seleccionar una dirección
@@ -96,11 +94,22 @@ class Categoria extends StatelessWidget {
                   ),
                   title: Text(
                     category['name'] as String,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () {
-                    // Acción al seleccionar una categoría
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => ProductosScreen(
+                              categoria: category['name'] as String,
+                            ),
+                      ),
+                    );
                   },
                 );
               },

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-// ✅ Función global para convertir enlaces de Google Drive a enlace directo
+// Función global para convertir enlaces de Google Drive a enlace directo
 String convertirEnlaceDriveADirecto(String url) {
   final regex = RegExp(r'd/([a-zA-Z0-9_-]+)');
   final match = regex.firstMatch(url);
@@ -16,7 +16,7 @@ class ProductosScreen extends StatelessWidget {
   final String categoria;
   const ProductosScreen({super.key, required this.categoria});
 
-  // ✅ Función para mostrar los detalles del producto en una ventana flotante
+  // Función para mostrar los detalles del producto en una ventana flotante
   void _mostrarDetallesProducto(BuildContext context, Map<String, dynamic> data, String imageUrl) {
     showDialog(
       context: context,

@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: const Color(0xFFFFC107), // Amarillo principal
-        scaffoldBackgroundColor: const Color(0xFFFFF9C4), // Fondo amarillo claro
+        scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255), // Fondo amarillo claro
         appBarTheme: const AppBarTheme(
           backgroundColor: Color(0xFFFFC107), // Fondo amarillo
           elevation: 0,

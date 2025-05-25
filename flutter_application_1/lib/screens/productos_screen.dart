@@ -16,24 +16,46 @@ class ProductosScreen extends StatelessWidget {
   final String categoria;
   const ProductosScreen({super.key, required this.categoria});
 
-  void _showImageDialog(BuildContext context, String imageUrl) {
+  // ✅ Función para mostrar los detalles del producto en una ventana flotante
+  void _mostrarDetallesProducto(BuildContext context, Map<String, dynamic> data, String imageUrl) {
     showDialog(
       context: context,
-      builder:
-          (_) => Dialog(
-            child: InteractiveViewer(
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) {
-                  return const Padding(
-                    padding: EdgeInsets.all(24.0),
-                    child: Icon(Icons.broken_image, size: 80),
-                  );
-                },
+      builder: (context) {
+        return AlertDialog(
+          title: Text(data['nombre'] ?? 'Sin nombre'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (imageUrl.isNotEmpty)
+                Image.network(
+                  imageUrl,
+                  height: 150,
+                  width: 150,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(Icons.broken_image, size: 80);
+                  },
+                ),
+              const SizedBox(height: 10),
+              Text(
+                data['descripcion'] ?? 'Sin descripción',
+                style: const TextStyle(fontSize: 16),
               ),
-            ),
+              const SizedBox(height: 10),
+              Text(
+                'Precio: \$${data['precio']?.toString() ?? '0'}',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ],
           ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cerrar'),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -55,72 +77,70 @@ class ProductosScreen extends StatelessWidget {
           final docs = snapshot.data!.docs;
           if (docs.isEmpty) return const Center(child: Text('Sin productos'));
           return ListView(
-            children:
-                docs.map((doc) {
-                  final data = doc.data() as Map<String, dynamic>;
-                  final rawImgUrl = data['img'] ?? '';
-                  final imageUrl = convertirEnlaceDriveADirecto(rawImgUrl);
+            children: docs.map((doc) {
+              final data = doc.data() as Map<String, dynamic>;
+              final rawImgUrl = data['img'] ?? '';
+              final imageUrl = convertirEnlaceDriveADirecto(rawImgUrl);
 
-                  return ListTile(
-                    leading:
-                        rawImgUrl.isNotEmpty
-                            ? GestureDetector(
-                              onTap: () => _showImageDialog(context, imageUrl),
-                              child: Container(
-                                width: 80,
-                                height: 80,
-                                color: Colors.white,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Image.network(
-                                    imageUrl,
-                                    fit: BoxFit.contain,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return const Icon(
-                                        Icons.broken_image,
-                                        size: 40,
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                            )
-                            : const Icon(Icons.image_not_supported, size: 40),
-                    title: Text(data['nombre'] ?? ''),
-                    subtitle: Text(
-                      '${data['descripcion'] ?? ''}\nPrecio: \$${data['precio']?.toString() ?? '0'}',
-                    ),
-                    isThreeLine: true,
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder:
-                                  (context) => CrearEditarProductoDialog(
-                                    categoria: categoria,
-                                    productoId: doc.id,
-                                    nombre: data['nombre'] ?? '',
-                                    descripcion: data['descripcion'] ?? '',
-                                    precio: data['precio']?.toString() ?? '',
-                                    img: rawImgUrl,
-                                  ),
-                            );
-                          },
+              return ListTile(
+                leading: rawImgUrl.isNotEmpty
+                    ? GestureDetector(
+                        onTap: () => _mostrarDetallesProducto(context, data, imageUrl),
+                        child: Container(
+                          width: 80,
+                          height: 80,
+                          color: Colors.white,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.network(
+                              imageUrl,
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Icon(
+                                  Icons.broken_image,
+                                  size: 40,
+                                );
+                              },
+                            ),
+                          ),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () async {
-                            await doc.reference.delete();
-                          },
-                        ),
-                      ],
+                      )
+                    : const Icon(Icons.image_not_supported, size: 40),
+                title: Text(data['nombre'] ?? ''),
+                subtitle: Text(
+                  '${data['descripcion'] ?? ''}\nPrecio: \$${data['precio']?.toString() ?? '0'}',
+                ),
+                isThreeLine: true,
+                onTap: () => _mostrarDetallesProducto(context, data, imageUrl),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => CrearEditarProductoDialog(
+                            categoria: categoria,
+                            productoId: doc.id,
+                            nombre: data['nombre'] ?? '',
+                            descripcion: data['descripcion'] ?? '',
+                            precio: data['precio']?.toString() ?? '',
+                            img: rawImgUrl,
+                          ),
+                        );
+                      },
                     ),
-                  );
-                }).toList(),
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () async {
+                        await doc.reference.delete();
+                      },
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
           );
         },
       ),
@@ -129,8 +149,7 @@ class ProductosScreen extends StatelessWidget {
         onPressed: () {
           showDialog(
             context: context,
-            builder:
-                (context) => CrearEditarProductoDialog(categoria: categoria),
+            builder: (context) => CrearEditarProductoDialog(categoria: categoria),
           );
         },
       ),
@@ -166,7 +185,6 @@ class _CrearEditarProductoDialogState extends State<CrearEditarProductoDialog> {
   late String nombre;
   late String descripcion;
   late String precio;
-  // Eliminado: late String img;
 
   @override
   void initState() {
@@ -174,7 +192,6 @@ class _CrearEditarProductoDialogState extends State<CrearEditarProductoDialog> {
     nombre = widget.nombre ?? '';
     descripcion = widget.descripcion ?? '';
     precio = widget.precio ?? '';
-    // Eliminado: img = widget.img ?? '';
   }
 
   @override
@@ -192,11 +209,8 @@ class _CrearEditarProductoDialogState extends State<CrearEditarProductoDialog> {
               TextFormField(
                 initialValue: nombre,
                 decoration: const InputDecoration(labelText: 'Nombre'),
-                validator:
-                    (value) =>
-                        value == null || value.isEmpty
-                            ? 'Ingrese un nombre'
-                            : null,
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Ingrese un nombre' : null,
                 onSaved: (value) => nombre = value ?? '',
               ),
               TextFormField(
@@ -219,7 +233,6 @@ class _CrearEditarProductoDialogState extends State<CrearEditarProductoDialog> {
                 },
                 onSaved: (value) => precio = value ?? '',
               ),
-              // Eliminado el campo de URL de imagen y el texto de ayuda
             ],
           ),
         ),
@@ -240,7 +253,6 @@ class _CrearEditarProductoDialogState extends State<CrearEditarProductoDialog> {
                 'descripcion': descripcion,
                 'precio': double.tryParse(precio) ?? 0,
                 'categoria': widget.categoria,
-                // 'img': convertirEnlaceDriveADirecto(img), // Elimina o ajusta según tu lógica
                 'creado': FieldValue.serverTimestamp(),
               };
 

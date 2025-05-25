@@ -12,7 +12,7 @@ class Promos extends StatefulWidget {
 
 class _PromosState extends State<Promos> {
   final CollectionReference _coleccion =
-      FirebaseFirestore.instance.collection('promos'); // Cambia 'delicia' por el nombre de tu colección
+      FirebaseFirestore.instance.collection('promos');
 
   final _formKey = GlobalKey<FormState>();
   final nombreController = TextEditingController();
@@ -123,8 +123,9 @@ class _PromosState extends State<Promos> {
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         subtitle: Text(
-                          '${data['descripcion']} - \$${data['precio']}\nTipo: ${data['tipo']}',
+                          '${data['descripcion']} - \$${data['precio']}',
                         ),
+                        onTap: () => _mostrarDetallesProducto(context, data, imgUrl),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -156,6 +157,48 @@ class _PromosState extends State<Promos> {
     );
   }
 
+  void _mostrarDetallesProducto(BuildContext context, Map<String, dynamic> data, String imgUrl) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(data['nombre']),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (imgUrl.isNotEmpty)
+                Image.network(
+                  imgUrl,
+                  height: 150,
+                  width: 150,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(Icons.broken_image, size: 150);
+                  },
+                ),
+              const SizedBox(height: 10),
+              Text(
+                data['descripcion'],
+                style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Precio: \$${data['precio']}',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cerrar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _mostrarFormulario(BuildContext context, {DocumentSnapshot? doc}) {
     if (doc != null) {
       final data = doc.data() as Map<String, dynamic>;
@@ -163,7 +206,6 @@ class _PromosState extends State<Promos> {
       descripcionController.text = data['descripcion'] ?? '';
       precioController.text = data['precio'].toString();
       tipoSeleccionado = data['tipo'] ?? 'Pan';
-      // Aquí puedes cargar la URL de la imagen si ya existe
     } else {
       nombreController.clear();
       descripcionController.clear();
@@ -183,50 +225,22 @@ class _PromosState extends State<Promos> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Campo de texto para el nombre
                   TextFormField(
                     controller: nombreController,
                     decoration: const InputDecoration(labelText: 'Nombre'),
-                    
                   ),
                   const SizedBox(height: 16),
-
-                  // Campo de texto para la descripción
                   TextFormField(
                     controller: descripcionController,
                     decoration: const InputDecoration(labelText: 'Descripción'),
-                    
                   ),
                   const SizedBox(height: 16),
-
-                  // Campo de texto para el precio
                   TextFormField(
                     controller: precioController,
                     decoration: const InputDecoration(labelText: 'Precio'),
                     keyboardType: TextInputType.numberWithOptions(decimal: true),
-                    
                   ),
                   const SizedBox(height: 16),
-
-                  // Dropdown para el tipo de producto
-                  DropdownButtonFormField<String>(
-                    value: tipoSeleccionado,
-                    decoration: const InputDecoration(labelText: 'tipo'),
-                    items: const [
-                      DropdownMenuItem(value: 'Pan', child: Text('Pan')),
-                      DropdownMenuItem(value: 'Pasteles', child: Text('Pasteles')),
-                      DropdownMenuItem(value: 'Bocaditos', child: Text('Bocaditos')),
-                    ],
-                    onChanged: (value) {
-                      setState(() {
-                        tipoSeleccionado = value!;
-                      });
-                    },
-                    
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Botón para seleccionar imagen
                   ElevatedButton(
                     onPressed: _seleccionarImagen,
                     child: const Text('Seleccionar Imagen'),
@@ -258,7 +272,6 @@ class _PromosState extends State<Promos> {
                     'descripcion': descripcionController.text.trim(),
                     'precio': double.parse(precioController.text.trim()),
                     'tipo': tipoSeleccionado,
-                    // Aquí puedes agregar la lógica para subir la imagen a Firebase Storage
                   };
                   if (doc == null) {
                     await _coleccion.add(data);

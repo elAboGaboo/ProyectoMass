@@ -22,7 +22,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: const Color(0xFFFFC107), // Amarillo principal
-        scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255), // Fondo amarillo claro
+        scaffoldBackgroundColor: const Color.fromARGB(
+          255,
+          255,
+          255,
+          255,
+        ), // Fondo amarillo claro
         appBarTheme: const AppBarTheme(
           backgroundColor: Color(0xFFFFC107), // Fondo amarillo
           elevation: 0,
@@ -37,7 +42,8 @@ class MyApp extends StatelessWidget {
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           backgroundColor: Color(0xFFFFC107), // Fondo amarillo
           selectedItemColor: Colors.black, // Íconos seleccionados en negro
-          unselectedItemColor: Colors.white, // Íconos no seleccionados en blanco
+          unselectedItemColor:
+              Colors.white, // Íconos no seleccionados en blanco
           selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
           unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
         ),
@@ -79,9 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Tiendas Mass'),
-      ),
+      appBar: AppBar(title: const Text('Tiendas Mass')),
       body: _screens[_currentIndex], // Muestra la pantalla seleccionada
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: _currentIndex,
@@ -112,26 +116,14 @@ class CustomBottomNavigationBar extends StatelessWidget {
       onTap: onTap,
       type: BottomNavigationBarType.fixed,
       items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.storefront),
-          label: 'Tienda',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.category),
-          label: 'Categoría',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.local_offer),
-          label: 'Promos',
-        ),
+        BottomNavigationBarItem(icon: Icon(Icons.storefront), label: 'Tienda'),
+        BottomNavigationBarItem(icon: Icon(Icons.category), label: 'Categoría'),
+        BottomNavigationBarItem(icon: Icon(Icons.local_offer), label: 'Promos'),
         BottomNavigationBarItem(
           icon: Icon(Icons.shopping_cart),
           label: 'Pedidos',
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Cuenta',
-        ),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Cuenta'),
       ],
     );
   }

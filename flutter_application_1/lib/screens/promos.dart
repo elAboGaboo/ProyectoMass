@@ -18,11 +18,13 @@ class _PromosState extends State<Promos> {
   final nombreController = TextEditingController();
   final descripcionController = TextEditingController();
   final precioController = TextEditingController();
+  String tipoSeleccionado = 'Pan';
   File? _imagenSeleccionada;
 
   Future<void> _seleccionarImagen() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
     if (pickedFile != null) {
       setState(() {
         _imagenSeleccionada = File(pickedFile.path);
@@ -120,19 +122,8 @@ class _PromosState extends State<Promos> {
                           data['nombre'],
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              data['descripcion'],
-                              style: const TextStyle(fontSize: 14),
-                            ),
-                            const SizedBox(height: 5),
-                            Text(
-                              'Precio: \$${data['precio']}',
-                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                            ),
-                          ],
+                        subtitle: Text(
+                          '${data['descripcion']} - \$${data['precio']}',
                         ),
                         onTap: () => _mostrarDetallesProducto(context, data, imgUrl),
                         trailing: Row(
@@ -214,10 +205,12 @@ class _PromosState extends State<Promos> {
       nombreController.text = data['nombre'] ?? '';
       descripcionController.text = data['descripcion'] ?? '';
       precioController.text = data['precio'].toString();
+      tipoSeleccionado = data['tipo'] ?? 'Pan';
     } else {
       nombreController.clear();
       descripcionController.clear();
       precioController.clear();
+      tipoSeleccionado = 'Pan';
       _imagenSeleccionada = null;
     }
 
@@ -278,6 +271,7 @@ class _PromosState extends State<Promos> {
                     'nombre': nombreController.text.trim(),
                     'descripcion': descripcionController.text.trim(),
                     'precio': double.parse(precioController.text.trim()),
+                    'tipo': tipoSeleccionado,
                   };
                   if (doc == null) {
                     await _coleccion.add(data);
